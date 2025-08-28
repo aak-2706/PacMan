@@ -18,6 +18,8 @@ public class App {
         PacMan pacman = new PacMan();
         frame.add(pacman);
         frame.pack();
+        pacman.requestFocus();
         frame.setVisible(true);
     }
 }
+
