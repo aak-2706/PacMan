@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.util.HashSet;
 import java.util.Random;
 
-public class PacMan extends JPanel{
+public class PacMan extends JPanel implements ActionListener,KeyListener{
     class Block{
         int x;
         int y;
@@ -68,10 +68,13 @@ public class PacMan extends JPanel{
     HashSet<Block> ghosts;
     Block pacman;
 
+    Timer gameLoop;
 
     PacMan(){
         setPreferredSize(new Dimension(boardWidth, boardHeight));
         setBackground(Color.BLACK);
+        addKeyListener(this);
+        setFocusable(true);
 
         wallImage = new ImageIcon(getClass().getResource("./wall.png")).getImage();
         blueGhostImage = new ImageIcon(getClass().getResource("./blueGhost.png")).getImage();
@@ -84,6 +87,95 @@ public class PacMan extends JPanel{
         pacmanDownImage = new ImageIcon(getClass().getResource("./pacmanDown.png")).getImage();
         pacmanRightImage = new ImageIcon(getClass().getResource("./pacmanRight.png")).getImage();
         pacmanLeftImage = new ImageIcon(getClass().getResource("./pacmanLeft.png")).getImage();
-        
+
+        loadMap();
+        gameLoop = new Timer(50,this);
+        gameLoop.start();
     }
+
+    public void loadMap(){
+        walls = new HashSet<Block>();
+        foods = new HashSet<Block>();
+        ghosts = new HashSet<Block>();
+
+        for(int r=0;r<rowCount;r++){
+            for(int c=0;c<colCount;c++){
+                String row = tileMap[r];
+                char tileMapChar = row.charAt(c);
+                int x = c*tileSize;
+                int y = r*tileSize;
+
+                if(tileMapChar == 'X'){
+                    Block wall = new Block(x,y,tileSize,tileSize,wallImage);
+                    walls.add(wall);
+                }
+                else if(tileMapChar == 'b'){
+                    Block ghost = new Block(x,y,tileSize,tileSize,blueGhostImage);
+                    ghosts.add(ghost);
+                }
+                else if(tileMapChar == 'o'){
+                    Block ghost = new Block(x,y,tileSize,tileSize,orangeGhostImage);
+                    ghosts.add(ghost);
+                }
+                else if(tileMapChar == 'r'){
+                    Block ghost = new Block(x,y,tileSize,tileSize,redGhostImage);
+                    ghosts.add(ghost);
+                }
+                else if(tileMapChar == 'p'){
+                    Block ghost = new Block(x,y,tileSize,tileSize,pinkGhostImage);
+                    ghosts.add(ghost);
+                }
+                else if(tileMapChar == ' '){
+                    Block food = new Block(x+14,y+14,4,4,null);
+                    foods.add(food);
+                }
+                else if(tileMapChar == 'P'){
+                    pacman = new Block(x,y,tileSize,tileSize,pacmanRightImage);
+                }
+            }
+        }
+    }
+
+    public void paintComponent(Graphics g){
+        super.paintComponent(g);
+        draw(g);
+    }
+
+    public void draw(Graphics g){
+        g.drawImage(pacman.image,pacman.x,pacman.y,pacman.width,pacman.height,null);
+
+        for(Block wall : walls){
+            g.drawImage(wall.image,wall.x,wall.y,wall.width,wall.height,null);
+        }
+        for(Block ghost : ghosts){
+            g.drawImage(ghost.image,ghost.x,ghost.y,ghost.width,ghost.height,null);
+        }
+        for(Block wall : walls){
+            g.drawImage(wall.image,wall.x,wall.y,wall.width,wall.height,null);
+        }
+        g.setColor(Color.GRAY);
+        for(Block food : foods){
+            g.fillRect(food.x,food.y,food.width,food.height);
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        repaint();
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
+    
+
+    @Override
+    public void keyPressed(KeyEvent e) {}
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        System.out.println("KeyEvent: "+e.getKeyCode());
+    }
+
 }
+}
+
