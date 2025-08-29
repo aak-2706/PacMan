@@ -13,7 +13,7 @@ public class PacMan extends JPanel implements ActionListener,KeyListener{
         Image image;
         int startX;
         int startY;
-        char direction = 'U';
+        char direction = 'R';
         int velocityX=0;
         int velocityY=0;
 
@@ -36,7 +36,7 @@ public class PacMan extends JPanel implements ActionListener,KeyListener{
                     this.x-=this.velocityX;
                     this.y-=this.velocityY;
                     this.direction = prevDirection;
-                    updateVelocity():
+                    updateVelocity();
                 }
             }
         }
@@ -61,8 +61,8 @@ public class PacMan extends JPanel implements ActionListener,KeyListener{
         }
 
         void reset(){
-            this.x = startX;
-            this.y = startY;
+            this.x = this.startX;
+            this.y = this.startY;
         }
     }
     private int rowCount = 21;
@@ -162,30 +162,44 @@ public class PacMan extends JPanel implements ActionListener,KeyListener{
 
                 if(tileMapChar == 'X'){
                     Block wall = new Block(x,y,tileSize,tileSize,wallImage);
+                    wall.startX = x;
+                    wall.startY = y;
                     walls.add(wall);
                 }
                 else if(tileMapChar == 'b'){
                     Block ghost = new Block(x,y,tileSize,tileSize,blueGhostImage);
+                    ghost.startX = x;
+                    ghost.startY = y;
                     ghosts.add(ghost);
                 }
                 else if(tileMapChar == 'o'){
                     Block ghost = new Block(x,y,tileSize,tileSize,orangeGhostImage);
+                    ghost.startX = x;
+                    ghost.startY = y;
                     ghosts.add(ghost);
                 }
                 else if(tileMapChar == 'r'){
                     Block ghost = new Block(x,y,tileSize,tileSize,redGhostImage);
+                    ghost.startX = x;
+                    ghost.startY = y;
                     ghosts.add(ghost);
                 }
                 else if(tileMapChar == 'p'){
                     Block ghost = new Block(x,y,tileSize,tileSize,pinkGhostImage);
+                    ghost.startX = x;
+                    ghost.startY = y;
                     ghosts.add(ghost);
                 }
                 else if(tileMapChar == ' '){
                     Block food = new Block(x+14,y+14,4,4,null);
+                    food.startX = x;
+                    food.startY = y;
                     foods.add(food);
                 }
                 else if(tileMapChar == 'P'){
                     pacman = new Block(x,y,tileSize,tileSize,pacmanRightImage);
+                    pacman.startX = x;
+                    pacman.startY = y;
                 }
             }
         }
@@ -274,6 +288,7 @@ public class PacMan extends JPanel implements ActionListener,KeyListener{
                 score+=10;
             }   
         }
+        foods.remove(foodEaten);
         if(foods.isEmpty()){
             loadMap();
             resetPositions();
@@ -284,7 +299,7 @@ public class PacMan extends JPanel implements ActionListener,KeyListener{
         pacman.reset();
         pacman.velocityX = 0;
         pacman.velocityY = 0;
-        for(Block ghost: ghosts){
+        for(Block ghost : ghosts){
             ghost.reset();
             char newDirection = directions[random.nextInt(4)];
             ghost.updateDirection(newDirection);
@@ -327,7 +342,7 @@ public class PacMan extends JPanel implements ActionListener,KeyListener{
             pacman.updateDirection('L');
         }
 
-        if(pacman.direction == 'U'){
+        if(pacman.direction == 'R'){
             pacman.image = pacmanRightImage;
         }
         else if(pacman.direction == 'L'){
